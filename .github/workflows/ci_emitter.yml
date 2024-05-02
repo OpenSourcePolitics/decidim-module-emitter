@@ -36,7 +36,7 @@ jobs:
           bundler-cache: true
       - name: Run Rubocop
         run: bundle exec rubocop -P
-  main:
+  tests:
     name: Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30

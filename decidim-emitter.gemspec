@@ -11,18 +11,18 @@ Gem::Specification.new do |s|
   s.license = "AGPL-3.0"
   s.homepage = "https://decidim.org"
   s.metadata = {
-    "bug_tracker_uri" => "https://github.com/decidim/decidim/issues",
+    "bug_tracker_uri" => "https://github.com/OpenSourcePolitics/decidim-module-emitter/issues",
     "documentation_uri" => "https://docs.decidim.org/",
     "funding_uri" => "https://opencollective.com/decidim",
     "homepage_uri" => "https://decidim.org",
-    "source_code_uri" => "https://github.com/decidim/decidim",
+    "source_code_uri" => "https://github.com/OpenSourcePolitics/decidim-module-emitter",
     "rubygems_mfa_required" => "true"
   }
   s.required_ruby_version = "~> 3.0"
 
   s.name = "decidim-emitter"
-  s.summary = "A decidim emitter module"
-  s.description = "A Decidim module to create new emitters for administrators."
+  s.summary = "Decidim module for adding new emitters to participatory processes"
+  s.description = "A Decidim module for adding new emitters to participatory processes directly from the backoffice, and visible in the frontoffice."
 
   s.files = Dir.chdir(__dir__) do
     `git ls-files -z`.split("\x0").select do |f|

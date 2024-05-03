@@ -1,0 +1,25 @@
+---
+fr:
+  decidim:
+    admin:
+      forms:
+        file_help:
+          emitter:
+            explanation: 'Consignes pour le logo :'
+            message_1: De préférence un logo qui sera visible sur un fond blanc.
+            message_2: Le service réduit l'image.
+    components:
+      emitter:
+        name: Émetteur
+    participatory_processes:
+      admin:
+        participatory_processes:
+          form:
+            emitter: Émetteur
+            emitter_logo: Logo
+            emitter_logo_select: Sélectionner un émetteur
+            emitter_name: Nom de l'émetteur
+            emitter_new: Nouvel émetteur
+            emitter_now: Émetteur actuel
+      emitter:
+        emitter_text: Publié par %{developer_group}

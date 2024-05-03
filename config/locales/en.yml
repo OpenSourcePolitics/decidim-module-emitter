@@ -8,18 +8,18 @@ en:
             explanation: 'Guidance for logo:'
             message_1: Preferrably a logo that will be seen on a white background.
             message_2: The service reduce the image.
-    participatory_processes:
-      emitter:
-        emitter_text: Consultation published by %{developer_group}
-      admin:
-        participatory_processes:
-          form:
-            emitter_now: "Emitter now"
-            emitter_new: "New emitter"
-            emitter_name: "Emitter name"
-            emitter: "Emitter"
-            emitter_logo: "Emitter logo"
-            emitter_logo_select: "Select an emitter"
     components:
       emitter:
         name: Emitter
+    participatory_processes:
+      admin:
+        participatory_processes:
+          form:
+            emitter: Emitter
+            emitter_logo: Emitter logo
+            emitter_logo_select: Select an emitter
+            emitter_name: Emitter name
+            emitter_new: New emitter
+            emitter_now: Emitter now
+      emitter:
+        emitter_text: Consultation published by %{developer_group}

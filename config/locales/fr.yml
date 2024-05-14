@@ -15,11 +15,11 @@ fr:
       admin:
         participatory_processes:
           form:
-            emitter: Émetteur
-            emitter_logo: Logo
-            emitter_logo_select: Sélectionner un émetteur
-            emitter_name: Nom de l'émetteur
-            emitter_new: Nouvel émetteur
+            emitter: Organisateur
+            emitter_logo: Nouveau logo
+            emitter_logo_select: Récupérez un logo d’organisateur déjà existant sur cette plateforme
+            emitter_name: Nom du nouveau logo
+            emitter_new: Ou choisissez un nouveau logo pour l’organisateur de la concertation
             emitter_now: Émetteur actuel
       emitter:
         emitter_text: Publié par %{developer_group}

@@ -28,24 +28,6 @@ module Decidim
       initializer "Emitter.webpacker.assets_path" do
         Decidim.register_assets_path File.expand_path("app/packs", root)
       end
-
-      initializer "decidim.emitter.overrides" do
-        config.to_prepare do
-          Decidim::ParticipatoryProcess.include(Decidim::Emitter::ParticipatoryProcessOverride) unless Decidim::Emitter.skip_extend?(:participatory_process)
-          unless Decidim::Emitter.skip_extend?(:participatory_process_form)
-            Decidim::ParticipatoryProcesses::Admin::ParticipatoryProcessForm.include(Decidim::Emitter::Admin::ParticipatoryProcessFormOverride)
-          end
-          unless Decidim::Emitter.skip_extend?(:participatory_process_create)
-            Decidim::ParticipatoryProcesses::Admin::CreateParticipatoryProcess.include(Decidim::Emitter::ParticipatoryProcesses::Admin::CreateParticipatoryProcessOverride)
-          end
-          unless Decidim::Emitter.skip_extend?(:participatory_process_copy)
-            Decidim::ParticipatoryProcesses::Admin::CopyParticipatoryProcess.include(Decidim::Emitter::ParticipatoryProcesses::Admin::CopyParticipatoryProcessOverride)
-          end
-          unless Decidim::Emitter.skip_extend?(:participatory_process_update)
-            Decidim::ParticipatoryProcesses::Admin::UpdateParticipatoryProcess.include(Decidim::Emitter::ParticipatoryProcesses::Admin::UpdateParticipatoryProcessOverride)
-          end
-        end
-      end
     end
   end
 end

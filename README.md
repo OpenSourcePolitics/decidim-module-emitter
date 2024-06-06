@@ -44,6 +44,21 @@ And then execute:
 bundle
 ```
 
+## Configure Emitter
+
+Configuration allows to skip extends made by the module using initializer
+
+Create `config/initializers/decidim_emitter.rb` and add the following:
+
+```ruby
+# frozen_string_literal: true
+
+Decidim::Emitter.configure do |config|
+  config.exclude_extends = [:participatory_process, :participatory_process_form, :participatory_process_create, :participatory_process_copy, :participatory_process_update]
+end
+```
+
+
 ## Next improvements
 
 - Move emitter to a dedicated model and use a DB relation to link it to Participatory Processes

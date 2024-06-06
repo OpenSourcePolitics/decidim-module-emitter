@@ -31,11 +31,19 @@ module Decidim
 
       initializer "decidim.emitter.overrides" do
         config.to_prepare do
-          Decidim::ParticipatoryProcess.include Decidim::Emitter::ParticipatoryProcessOverride
-          Decidim::ParticipatoryProcesses::Admin::ParticipatoryProcessForm.include Decidim::Emitter::Admin::ParticipatoryProcessFormOverride
-          Decidim::ParticipatoryProcesses::Admin::CreateParticipatoryProcess.include Decidim::Emitter::ParticipatoryProcesses::Admin::CreateParticipatoryProcessOverride
-          Decidim::ParticipatoryProcesses::Admin::CopyParticipatoryProcess.include Decidim::Emitter::ParticipatoryProcesses::Admin::CopyParticipatoryProcessOverride
-          Decidim::ParticipatoryProcesses::Admin::UpdateParticipatoryProcess.include Decidim::Emitter::ParticipatoryProcesses::Admin::UpdateParticipatoryProcessOverride
+          Decidim::ParticipatoryProcess.include(Decidim::Emitter::ParticipatoryProcessOverride) unless Decidim::Emitter.skip_extend?(:participatory_process)
+          unless Decidim::Emitter.skip_extend?(:participatory_process_form)
+            Decidim::ParticipatoryProcesses::Admin::ParticipatoryProcessForm.include(Decidim::Emitter::Admin::ParticipatoryProcessFormOverride)
+          end
+          unless Decidim::Emitter.skip_extend?(:participatory_process_create)
+            Decidim::ParticipatoryProcesses::Admin::CreateParticipatoryProcess.include(Decidim::Emitter::ParticipatoryProcesses::Admin::CreateParticipatoryProcessOverride)
+          end
+          unless Decidim::Emitter.skip_extend?(:participatory_process_copy)
+            Decidim::ParticipatoryProcesses::Admin::CopyParticipatoryProcess.include(Decidim::Emitter::ParticipatoryProcesses::Admin::CopyParticipatoryProcessOverride)
+          end
+          unless Decidim::Emitter.skip_extend?(:participatory_process_update)
+            Decidim::ParticipatoryProcesses::Admin::UpdateParticipatoryProcess.include(Decidim::Emitter::ParticipatoryProcesses::Admin::UpdateParticipatoryProcessOverride)
+          end
         end
       end
     end

@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
     "source_code_uri" => "https://github.com/OpenSourcePolitics/decidim-module-emitter",
     "rubygems_mfa_required" => "true"
   }
-  s.required_ruby_version = "~> 3.0"
+  s.required_ruby_version = "~> 3.2"
 
   s.name = "decidim-emitter"
   s.summary = "Decidim module for adding new emitters to participatory processes"
@@ -31,8 +31,8 @@ Gem::Specification.new do |s|
     end
   end
 
-  s.add_dependency "decidim-core", "~> #{Decidim::Emitter::DECIDIM_VERSION}"
-  s.add_dependency "decidim-participatory_processes", "~> #{Decidim::Emitter::DECIDIM_VERSION}"
+  s.add_dependency "decidim-core", "#{Decidim::Emitter::DECIDIM_VERSION}"
+  s.add_dependency "decidim-participatory_processes", "#{Decidim::Emitter::DECIDIM_VERSION}"
 
-  s.add_development_dependency "decidim-dev", "~> #{Decidim::Emitter::DECIDIM_VERSION}"
+  s.add_development_dependency "decidim-dev", "#{Decidim::Emitter::DECIDIM_VERSION}"
 end

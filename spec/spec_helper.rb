@@ -9,7 +9,7 @@ Decidim::Dev.dummy_app_path = File.expand_path(File.join("spec", "decidim_dummy_
 require "decidim/dev/test/base_spec_helper"
 
 Capybara.register_driver :headless_chrome do |app|
-  options = ::Selenium::WebDriver::Chrome::Options.new
+  options = Selenium::WebDriver::Chrome::Options.new
   options.args << "--headless=new"
   options.args << "--no-sandbox"
   options.args << if ENV["BIG_SCREEN_SIZE"].present?
@@ -21,6 +21,6 @@ Capybara.register_driver :headless_chrome do |app|
   Capybara::Selenium::Driver.new(
     app,
     browser: :chrome,
-    capabilities: [options]
+    options:
   )
 end

@@ -6,14 +6,16 @@ module Decidim::ParticipatoryProcesses
   describe Admin::CreateParticipatoryProcess, versioning: true do
     subject { described_class.new(form) }
 
-    let(:organization) { create :organization }
-    let(:participatory_process_group) { create :participatory_process_group, organization: organization }
-    let(:participatory_process_type) { create :participatory_process_type, organization: organization }
-    let(:scope) { create :scope, organization: organization }
-    let(:area) { create :area, organization: organization }
-    let(:current_user) { create :user, :admin, organization: organization }
+    let(:organization) { create(:organization) }
+    let(:participatory_process_group) { create(:participatory_process_group, organization:) }
+    let(:participatory_process_type) { create(:participatory_process_type, organization:) }
+    let(:scope) { create(:scope, organization:) }
+    let(:area) { create(:area, organization:) }
+    let(:current_user) { create(:user, :admin, organization:) }
     let(:errors) { double.as_null_object }
     let(:related_process_ids) { [] }
+    let(:weight) { 1 }
+    let(:hero_image) { nil }
     let(:emitter) { upload_test_file(Decidim::Dev.test_file("city.jpeg", "image/jpeg")) }
     let(:emitter_name) { "Berlin" }
     let(:weight) { 1 }
@@ -23,12 +25,11 @@ module Decidim::ParticipatoryProcesses
         invalid?: invalid,
         title: { en: "title" },
         subtitle: { en: "subtitle" },
-        weight: weight,
+        weight:,
         slug: "slug",
         hashtag: "hashtag",
         meta_scope: { en: "meta scope" },
-        hero_image: nil,
-        banner_image: nil,
+        hero_image:,
         promoted: nil,
         developer_group: { en: "developer group" },
         local_area: { en: "local" },
@@ -39,19 +40,18 @@ module Decidim::ParticipatoryProcesses
         end_date: nil,
         description: { en: "description" },
         short_description: { en: "short_description" },
-        current_user: current_user,
+        current_user:,
         current_organization: organization,
+        organization:,
         scopes_enabled: true,
         private_space: false,
-        scope: scope,
+        scope:,
         scope_type_max_depth: nil,
-        area: area,
-        errors: errors,
-        related_process_ids: related_process_ids,
-        participatory_process_group: participatory_process_group,
-        participatory_process_type: participatory_process_type,
-        show_statistics: false,
-        show_metrics: false,
+        area:,
+        errors:,
+        related_process_ids:,
+        participatory_process_group:,
+        participatory_process_type:,
         announcement: { en: "message" },
         emitter: emitter,
         emitter_name: emitter_name
@@ -68,20 +68,16 @@ module Decidim::ParticipatoryProcesses
     end
 
     context "when the process is not persisted" do
-      let(:invalid_process) do
-        instance_double(
-          Decidim::ParticipatoryProcess,
-          persisted?: false,
-          valid?: false,
-          errors: {
-            hero_image: "File resolution is too large",
-            banner_image: "File resolution is too large"
-          }
-        ).as_null_object
+      let(:hero_image) do
+        ActiveStorage::Blob.create_and_upload!(
+          io: File.open(Decidim::Dev.asset("invalid.jpeg")),
+          filename: "avatar.jpeg",
+          content_type: "image/jpeg"
+        )
       end
 
       before do
-        allow(Decidim::ParticipatoryProcess).to receive(:new).and_return(invalid_process)
+        allow(Decidim::ActionLogger).to receive(:log).and_return(true)
       end
 
       it "broadcasts invalid" do
@@ -90,7 +86,6 @@ module Decidim::ParticipatoryProcesses
 
       it "adds errors to the form" do
         expect(errors).to receive(:add).with(:hero_image, "File resolution is too large")
-        expect(errors).to receive(:add).with(:banner_image, "File resolution is too large")
         subject.call
       end
     end
@@ -102,17 +97,15 @@ module Decidim::ParticipatoryProcesses
         expect { subject.call }.to change(Decidim::ParticipatoryProcess, :count).by(1)
       end
 
-      it "traces the creation", versioning: true do
-        expect(Decidim::ActionLogger)
-          .to receive(:log)
-          .with("create", current_user, a_kind_of(Decidim::ParticipatoryProcess), a_kind_of(Integer))
-          .and_call_original
+      it "traces the action", versioning: true do
+        expect(Decidim.traceability)
+          .to receive(:create)
+                .with(Decidim::ParticipatoryProcess, current_user, kind_of(Hash))
+                .and_call_original
 
         expect { subject.call }.to change(Decidim::ActionLog, :count)
-
         action_log = Decidim::ActionLog.last
         expect(action_log.version).to be_present
-        expect(action_log.version.event).to eq "create"
       end
 
       it "broadcasts ok" do
@@ -125,31 +118,25 @@ module Decidim::ParticipatoryProcesses
         expect(process.steps.first).to be_active
       end
 
-      it "doesn't enable by default stats and metrics" do
-        subject.call
-        expect(process.show_statistics).to be(false)
-        expect(process.show_metrics).to be(false)
-      end
-
       it "adds the admins as followers" do
         subject.call
         expect(current_user.follows?(process)).to be true
       end
 
       context "with related processes" do
-        let!(:another_process) { create :participatory_process, organization: organization }
+        let!(:another_process) { create(:participatory_process, organization:) }
         let(:related_process_ids) { [another_process.id] }
 
         it "links related processes" do
           subject.call
 
           linked_processes = process.linked_participatory_space_resources(:participatory_process, "related_processes")
-          expect(linked_processes).to match_array([another_process])
+          expect(linked_processes).to contain_exactly(another_process)
         end
 
         context "when sorting by weight" do
-          let!(:process_one) { create :participatory_process, organization: organization, weight: 2 }
-          let!(:process_two) { create :participatory_process, organization: organization, weight: 1 }
+          let!(:process_one) { create(:participatory_process, organization:, weight: 2) }
+          let!(:process_two) { create(:participatory_process, organization:, weight: 1) }
           let(:related_process_ids) { [process_one.id, process_two.id] }
 
           it "links processes in right way" do

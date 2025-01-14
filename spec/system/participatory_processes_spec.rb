@@ -3,7 +3,7 @@
 require "spec_helper"
 require "decidim/core/test/shared_examples/has_contextual_help"
 
-describe "Participatory Processes" do
+describe "Participatory Processes" do # rubocop:disable RSpec/DescribeClass
   let(:organization) { create(:organization) }
   let(:hashtag) { true }
   let(:base_description) { { en: "Description", ca: "Descripció", es: "Descripción" } }
@@ -112,7 +112,7 @@ describe "Participatory Processes" do
               :participatory_process,
               :active,
               :with_emitter,
-              organization: organization,
+              organization:,
               description: { en: "Description", ca: "Descripció", es: "Descripción" },
               short_description: { en: "Short description", ca: "Descripció curta", es: "Descripción corta" },
               developer_group: { en: "Developer group" }
@@ -129,6 +129,7 @@ describe "Participatory Processes" do
           end
         end
       end
+
       context "and accessing from the homepage" do
         let!(:menu_content_block) { create(:content_block, organization:, manifest_name: :global_menu, scope_name: :homepage) }
 
@@ -167,7 +168,7 @@ describe "Participatory Processes" do
                 :participatory_process,
                 :active,
                 :with_emitter,
-                organization: organization,
+                organization:,
                 description: { en: "Description", ca: "Descripció", es: "Descripción" },
                 short_description: { en: "Short description", ca: "Descripció curta", es: "Descripción corta" },
                 developer_group: { en: "Developer group" }
@@ -414,7 +415,7 @@ describe "Participatory Processes" do
               end
             end
 
-            it "click link" do
+            it "click link" do # rubocop:disable RSpec/NoExpectationExample
               click_on("Show all")
               have_current_path(decidim_participatory_processes.all_metrics_participatory_process_path(participatory_process))
             end

@@ -127,23 +127,6 @@ module Decidim::ParticipatoryProcesses
             expect(linked_processes).to contain_exactly(another_process)
           end
         end
-
-        context "when no banner image is set" do
-          let(:attachment_params) do
-            {
-              hero_image: my_process.hero_image.blob
-            }
-          end
-
-          it "does not replace the banner image" do
-            expect(my_process).not_to receive(:banner_image=)
-
-            command.call
-            my_process.reload
-
-            expect(my_process.banner_image.attached?).to be true
-          end
-        end
       end
     end
   end

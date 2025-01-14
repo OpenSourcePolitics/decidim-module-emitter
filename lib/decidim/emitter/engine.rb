@@ -16,7 +16,7 @@ module Decidim
       end
 
       config.to_prepare do
-        ActionView::Base.include(Decidim::Emitter::EmitterHelper)
+        ActiveSupport.on_load(:action_view) { include Decidim::Emitter::EmitterHelper }
         Decidim::ViewModel.include(Decidim::Emitter::EmitterHelper)
       end
 

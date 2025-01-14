@@ -3,7 +3,7 @@
 require "spec_helper"
 
 module Decidim::ParticipatoryProcesses
-  describe Admin::CreateParticipatoryProcess, versioning: true do
+  describe Admin::CreateParticipatoryProcess, :versioning do
     subject { described_class.new(form) }
 
     let(:organization) { create(:organization) }
@@ -18,7 +18,6 @@ module Decidim::ParticipatoryProcesses
     let(:hero_image) { nil }
     let(:emitter) { upload_test_file(Decidim::Dev.test_file("city.jpeg", "image/jpeg")) }
     let(:emitter_name) { "Berlin" }
-    let(:weight) { 1 }
     let(:form) do
       instance_double(
         Admin::ParticipatoryProcessForm,
@@ -53,8 +52,8 @@ module Decidim::ParticipatoryProcesses
         participatory_process_group:,
         participatory_process_type:,
         announcement: { en: "message" },
-        emitter: emitter,
-        emitter_name: emitter_name
+        emitter:,
+        emitter_name:
       )
     end
     let(:invalid) { false }
@@ -97,11 +96,11 @@ module Decidim::ParticipatoryProcesses
         expect { subject.call }.to change(Decidim::ParticipatoryProcess, :count).by(1)
       end
 
-      it "traces the action", versioning: true do
+      it "traces the action", :versioning do
         expect(Decidim.traceability)
           .to receive(:create)
-                .with(Decidim::ParticipatoryProcess, current_user, kind_of(Hash))
-                .and_call_original
+          .with(Decidim::ParticipatoryProcess, current_user, kind_of(Hash))
+          .and_call_original
 
         expect { subject.call }.to change(Decidim::ActionLog, :count)
         action_log = Decidim::ActionLog.last

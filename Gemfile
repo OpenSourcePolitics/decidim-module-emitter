@@ -12,7 +12,7 @@ require_relative "#{base_path}lib/decidim/emitter/version"
 
 DECIDIM_VERSION = Decidim::Emitter::DECIDIM_VERSION
 
-gem "decidim", "#{DECIDIM_VERSION}"
+gem "decidim", DECIDIM_VERSION.to_s
 gem "decidim-emitter", path: "."
 
 gem "bootsnap", "~> 1.4"
@@ -22,7 +22,7 @@ group :development, :test do
   gem "brakeman", "~> 6.1"
   gem "byebug", "~> 11.0", platform: :mri
   gem "climate_control", "~> 1.2"
-  gem "decidim-dev", "#{DECIDIM_VERSION}"
+  gem "decidim-dev", DECIDIM_VERSION.to_s
   gem "parallel_tests", "~> 4.2"
 end
 

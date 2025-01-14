@@ -76,7 +76,7 @@ module Decidim::ParticipatoryProcesses
         expect { subject.call }.to broadcast(:ok)
       end
 
-      it "traces the action", versioning: true do
+      it "traces the action", :versioning do
         expect(Decidim.traceability)
           .to receive(:perform_action!)
           .with("duplicate", Decidim::ParticipatoryProcess, current_user)
@@ -145,7 +145,7 @@ module Decidim::ParticipatoryProcesses
         expect { subject.call }.to change(Decidim::Component, :count).by(1)
 
         last_participatory_process = Decidim::ParticipatoryProcess.last
-        last_component = Decidim::Component.all.reorder(:id).last
+        last_component = Decidim::Component.reorder(:id).last
 
         expect(last_component.participatory_space).to eq(last_participatory_process)
         expect(last_component.name).to eq(component.name)

@@ -9,11 +9,11 @@ module Decidim
         let(:organization) { create(:organization) }
         let(:emitter_names) { %w(Abidjan London Tokyo) }
         let(:emitter) { upload_test_file(Decidim::Dev.test_file("city.jpeg", "image/jpeg")) }
-        let!(:participatory_process) { create(:participatory_process, emitter_name: "Berlin", emitter: emitter, organization: organization) }
+        let!(:participatory_process) { create(:participatory_process, emitter_name: "Berlin", emitter:, organization:) }
 
         before do
           emitter_names.each do |emitter_name|
-            create(:participatory_process, emitter_name: emitter_name, emitter: emitter, organization: organization)
+            create(:participatory_process, emitter_name:, emitter:, organization:)
           end
           allow_any_instance_of(ActionView::Base).to receive(:current_organization).and_return(organization)
         end

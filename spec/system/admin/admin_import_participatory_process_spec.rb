@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin imports participatory process" do
+describe "Admin imports participatory process" do # rubocop:disable RSpec/DescribeClass
   include_context "when admin administrating a participatory process"
 
   before do

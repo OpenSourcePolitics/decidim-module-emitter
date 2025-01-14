@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe "Admin manages participatory processes", versioning: true do
+describe "Admin manages participatory processes", :versioning do # rubocop:disable RSpec/DescribeClass
   include_context "when admin administrating a participatory process"
 
   let!(:participatory_process_groups) do

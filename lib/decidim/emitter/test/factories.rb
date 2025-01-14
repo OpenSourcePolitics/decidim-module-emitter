@@ -65,7 +65,7 @@ FactoryBot.modify do
         create(:participatory_process_step,
                active: true,
                end_date: evaluator.current_step_ends,
-               participatory_process: participatory_process)
+               participatory_process:)
         participatory_process.reload
         participatory_process.steps.reload
       end
@@ -88,7 +88,7 @@ FactoryBot.modify do
 
     trait :with_scope do
       scopes_enabled { true }
-      scope { create :scope, organization: organization }
+      scope { create :scope, organization: }
     end
   end
 end

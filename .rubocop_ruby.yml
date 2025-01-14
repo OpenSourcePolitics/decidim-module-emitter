@@ -69,12 +69,7 @@ AllCops:
   # If a value is specified for TargetRubyVersion then it is used.
   # Else if .ruby-version exists and it contains an MRI version it is used.
   # Otherwise we fallback to the oldest officially supported Ruby version (2.0).
-  TargetRubyVersion: 3.0
-
-  RSpec:
-    Patterns:
-      - "(?:^|/)spec/"
-      - "(?:^|/)test/"
+  TargetRubyVersion: 3.2
 
 # Indent private/protected/public as deep as method definitions
 Layout/AccessModifierIndentation:
@@ -210,7 +205,7 @@ Style/BlockDelimiters:
     # This looks at the usage of a block's method to determine its type (e.g. is
     # the result of a `map` assigned to a variable or passed to another
     # method) but exceptions are permitted in the `ProceduralMethods`,
-    # `FunctionalMethods` and `IgnoredMethods` sections below.
+    # `FunctionalMethods` and `AllowedMethods` sections below.
     - semantic
     # The `braces_for_chaining` style enforces braces around single line blocks
     # and do..end around multi-line blocks, except for multi-line blocks whose
@@ -249,20 +244,9 @@ Style/BlockDelimiters:
     - let!
     - subject
     - watch
-  IgnoredMethods:
-    # Methods that can be either procedural or functional and cannot be
-    # categorised from their usage alone, e.g.
-    #
-    #   foo = lambda do |x|
-    #     puts "Hello, #{x}"
-    #   end
-    #
-    #   foo = lambda do |x|
-    #     x * 100
-    #   end
-    #
-    # Here, it is impossible to tell from the return value of `lambda` whether
-    # the inner block's return value is significant.
+  AllowedMethods:
+    Enabled: true
+    Exclude:
     - lambda
     - proc
     - it
@@ -969,7 +953,9 @@ Style/SymbolArray:
 Style/SymbolProc:
   # A list of method names to be ignored by the check.
   # The names should be fairly unique, otherwise you'll end up ignoring lots of code.
-  IgnoredMethods:
+  AllowedMethods:
+    Enabled: true
+    Exclude:
     - respond_to
     - define_method
 

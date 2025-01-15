@@ -23,3 +23,4 @@ fr:
             emitter_now: Émetteur actuel
       emitter:
         emitter_text: Publié par %{developer_group}
+        emitter_img_alt_test: Logo de %{developer_group}

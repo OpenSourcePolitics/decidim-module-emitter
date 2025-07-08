@@ -81,8 +81,8 @@ module Decidim
           def prepare_emitter_name!
             self.emitter_name = emitter_read_name
             self.emitter_name = emitter_name_select if emitter_name_select.present?
-            self.emitter_name = emitter_name_image if emitter_name_image.present?
             self.emitter_name = nil if remove_emitter
+            self.emitter_name = emitter_name_image if emitter_name_image.present?
           end
 
           def prepare_emitter!

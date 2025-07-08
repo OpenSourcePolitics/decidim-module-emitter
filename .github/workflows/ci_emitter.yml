@@ -3,7 +3,7 @@ on: ["push"]
 
 env:
   CI: "true"
-  RUBY_VERSION: 3.0.6
+  RUBY_VERSION: 3.2.2
   NODE_VERSION: 18.17.1
 
 concurrency:
@@ -54,6 +54,8 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: sudo apt install imagemagick
+        name: Install imagemagick
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -78,7 +80,7 @@ jobs:
       - run: bundle exec rspec
         name: RSpec
       - uses: codecov/codecov-action@v3
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: screenshots

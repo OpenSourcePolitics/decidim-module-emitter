@@ -1,10 +1,49 @@
 /* css for decidim_emitter */
 
-.emitter-header .card-data__item{
+.card-data-highlight {
+  display: flex;
+  flex-direction: column;
+}
+.card-data-header .card-data__item{
   border-bottom: 1px solid #e8e8e8;
   margin-bottom: 0px;
 
   img {
     max-width: 60%;
+  }
+}
+.card-data-header {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+}
+.card-data__item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-basis: 33.33%;
+  flex-grow: 1;
+  text-align: center;
+  font-size: 0.9375rem;
+  line-height: 1;
+  color: #726a70;
+  padding: 0.5em;
+  border-right: 1px solid #e8e8e8;
+  margin-right: -1px;
+  border-top: 1px solid #e8e8e8;
+  margin-top: -1px;
+}
+
+/* responsive */
+@media (min-width: 640px) {
+  .card-data-highlight {
+    width: 100%;
+  }
+}
+@media (min-width: 768px) {
+  .card-data-highlight {
+    width: 50%;
   }
 }

@@ -4,15 +4,15 @@ require "spec_helper"
 
 module Decidim::ParticipatoryProcesses
   describe Admin::CopyParticipatoryProcess do
-    subject { described_class.new(form, participatory_process, user) }
+    subject { described_class.new(form, participatory_process) }
 
-    let(:organization) { create :organization }
-    let(:user) { create :user, organization: organization }
-    let(:participatory_process_group) { create :participatory_process_group, organization: organization }
-    let(:scope) { create :scope, organization: organization }
+    let(:organization) { create(:organization) }
+    let(:current_user) { create(:user, organization:) }
+    let(:participatory_process_group) { create(:participatory_process_group, organization:) }
+    let(:scope) { create(:scope, organization:) }
     let(:errors) { double.as_null_object }
-    let!(:participatory_process) { create :participatory_process, :with_steps }
-    let!(:component) { create :component, manifest_name: :dummy, participatory_space: participatory_process }
+    let!(:participatory_process) { create(:participatory_process, :with_steps) }
+    let!(:component) { create(:component, manifest_name: :dummy, participatory_space: participatory_process) }
     let(:form) do
       instance_double(
         Admin::ParticipatoryProcessCopyForm,
@@ -21,7 +21,8 @@ module Decidim::ParticipatoryProcesses
         slug: "copied-slug",
         copy_steps?: copy_steps,
         copy_categories?: copy_categories,
-        copy_components?: copy_components
+        copy_components?: copy_components,
+        current_user:
       )
     end
     let!(:category) do
@@ -75,10 +76,10 @@ module Decidim::ParticipatoryProcesses
         expect { subject.call }.to broadcast(:ok)
       end
 
-      it "traces the action", versioning: true do
+      it "traces the action", :versioning do
         expect(Decidim.traceability)
           .to receive(:perform_action!)
-          .with("duplicate", Decidim::ParticipatoryProcess, user)
+          .with("duplicate", Decidim::ParticipatoryProcess, current_user)
           .and_call_original
 
         expect { subject.call }.to change(Decidim::ActionLog, :count)
@@ -144,7 +145,7 @@ module Decidim::ParticipatoryProcesses
         expect { subject.call }.to change(Decidim::Component, :count).by(1)
 
         last_participatory_process = Decidim::ParticipatoryProcess.last
-        last_component = Decidim::Component.all.reorder(:id).last
+        last_component = Decidim::Component.reorder(:id).last
 
         expect(last_component.participatory_space).to eq(last_participatory_process)
         expect(last_component.name).to eq(component.name)

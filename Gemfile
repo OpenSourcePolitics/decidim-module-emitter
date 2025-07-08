@@ -12,25 +12,25 @@ require_relative "#{base_path}lib/decidim/emitter/version"
 
 DECIDIM_VERSION = Decidim::Emitter::DECIDIM_VERSION
 
-gem "decidim", "~> #{DECIDIM_VERSION}"
+gem "decidim", DECIDIM_VERSION.to_s
 gem "decidim-emitter", path: "."
 
 gem "bootsnap", "~> 1.4"
-gem "puma", ">= 5.5.1"
+gem "puma", ">= 6.3.1"
 
 group :development, :test do
-  gem "brakeman", "~> 5.1"
+  gem "brakeman", "~> 6.1"
   gem "byebug", "~> 11.0", platform: :mri
   gem "climate_control", "~> 1.2"
-  gem "decidim-dev", "~> #{DECIDIM_VERSION}"
-  gem "parallel_tests"
+  gem "decidim-dev", DECIDIM_VERSION.to_s
+  gem "parallel_tests", "~> 4.2"
 end
 
 group :development do
-  gem "letter_opener_web", "~> 1.3"
+  gem "letter_opener_web", "~> 2.0"
   gem "listen", "~> 3.1"
   gem "rubocop-faker"
-  gem "spring", "~> 2.0"
+  gem "spring", "~> 4.0"
   gem "spring-watcher-listen", "~> 2.0"
-  gem "web-console", "4.0.4"
+  gem "web-console", "~> 4.2"
 end

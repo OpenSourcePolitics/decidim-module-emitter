@@ -6,7 +6,7 @@ require "decidim/core/test/factories"
 FactoryBot.define do
   factory :emitter_component, parent: :component do
     name { Decidim::Components::Namer.new(participatory_space.organization.available_locales, :emitter).i18n_name }
-    manifest_name :emitter
+    manifest_name { :emitter }
     participatory_space { create(:participatory_process, :with_steps) }
   end
 end
@@ -21,7 +21,7 @@ FactoryBot.modify do
     description { Decidim::Faker::Localized.wrapped("<p>", "</p>") { generate_localized_title } }
     organization
     hero_image { Decidim::Dev.test_file("city.jpeg", "image/jpeg") } # Keep after organization
-    banner_image { Decidim::Dev.test_file("city2.jpeg", "image/jpeg") } # Keep after organization
+    # banner_image { Decidim::Dev.test_file("city2.jpeg", "image/jpeg") } # Keep after organization
     published_at { Time.current }
     meta_scope { Decidim::Faker::Localized.word }
     developer_group { generate_localized_title }
@@ -65,7 +65,7 @@ FactoryBot.modify do
         create(:participatory_process_step,
                active: true,
                end_date: evaluator.current_step_ends,
-               participatory_process: participatory_process)
+               participatory_process:)
         participatory_process.reload
         participatory_process.steps.reload
       end
@@ -88,7 +88,7 @@ FactoryBot.modify do
 
     trait :with_scope do
       scopes_enabled { true }
-      scope { create :scope, organization: organization }
+      scope { create :scope, organization: }
     end
   end
 end

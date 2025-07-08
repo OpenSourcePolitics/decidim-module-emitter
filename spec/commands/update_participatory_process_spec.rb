@@ -33,8 +33,6 @@ module Decidim::ParticipatoryProcesses
             area: my_process.area,
             errors: my_process.errors,
             participatory_process_group: my_process.participatory_process_group,
-            show_metrics: my_process.show_metrics,
-            show_statistics: my_process.show_statistics,
             private_space: my_process.private_space,
             emitter_name: my_process.emitter_name
           }.merge(attachment_params)
@@ -43,8 +41,7 @@ module Decidim::ParticipatoryProcesses
       let(:attachment_params) do
         {
           hero_image: my_process.hero_image.blob,
-          banner_image: my_process.banner_image.blob,
-          emitter: my_process.banner_image.blob
+          emitter: my_process.hero_image.blob
         }
       end
       let(:user) { create :user, :admin, :confirmed, organization: my_process.organization }
@@ -58,7 +55,7 @@ module Decidim::ParticipatoryProcesses
       let(:form) do
         Admin::ParticipatoryProcessForm.from_params(params).with_context(context)
       end
-      let(:command) { described_class.new(my_process, form) }
+      let(:command) { described_class.new(form, my_process) }
 
       describe "when the form is not valid" do
         before do
@@ -82,7 +79,6 @@ module Decidim::ParticipatoryProcesses
           allow(form).to receive(:invalid?).and_return(false)
           expect(my_process).to receive(:valid?).at_least(:once).and_return(false)
           my_process.errors.add(:hero_image, "File resolution is too large")
-          my_process.errors.add(:banner_image, "File resolution is too large")
         end
 
         it "broadcasts invalid" do
@@ -93,7 +89,6 @@ module Decidim::ParticipatoryProcesses
           command.call
 
           expect(form.errors[:hero_image]).not_to be_empty
-          expect(form.errors[:banner_image]).not_to be_empty
         end
       end
 
@@ -109,10 +104,10 @@ module Decidim::ParticipatoryProcesses
           expect(my_process.title["en"]).to eq("Foo title")
         end
 
-        it "tracks the action", versioning: true do
+        it "tracks the action", :versioning do
           expect(Decidim.traceability)
             .to receive(:perform_action!)
-            .with(:update, my_process, user)
+            .with(:update, my_process, user, {})
             .and_call_original
 
           expect { command.call }.to change(Decidim::ActionLog, :count)
@@ -129,41 +124,7 @@ module Decidim::ParticipatoryProcesses
             command.call
 
             linked_processes = my_process.linked_participatory_space_resources(:participatory_process, "related_processes")
-            expect(linked_processes).to match_array([another_process])
-          end
-        end
-
-        context "when no homepage image is set" do
-          let(:attachment_params) do
-            {
-              banner_image: my_process.banner_image.blob
-            }
-          end
-
-          it "does not replace the homepage image" do
-            expect(my_process).not_to receive(:hero_image=)
-
-            command.call
-            my_process.reload
-
-            expect(my_process.hero_image.attached?).to be true
-          end
-        end
-
-        context "when no banner image is set" do
-          let(:attachment_params) do
-            {
-              hero_image: my_process.hero_image.blob
-            }
-          end
-
-          it "does not replace the banner image" do
-            expect(my_process).not_to receive(:banner_image=)
-
-            command.call
-            my_process.reload
-
-            expect(my_process.banner_image.attached?).to be true
+            expect(linked_processes).to contain_exactly(another_process)
           end
         end
       end

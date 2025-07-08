@@ -3,7 +3,6 @@
 require "decidim/emitter/admin"
 require "decidim/emitter/engine"
 require "decidim/emitter/admin_engine"
-require "decidim/emitter/component"
 
 module Decidim
   # This namespace holds the logic of the `Emitter` component. This component

@@ -1,5 +1,10 @@
 ---
 fr:
+  activemodel:
+    attributes:
+      participatory_process:
+        emitter_name: Nom de l’émetteur
+        emitter_image: Logo de l’émetteur
   decidim:
     admin:
       forms:

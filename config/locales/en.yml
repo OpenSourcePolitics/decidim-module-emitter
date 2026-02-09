@@ -1,5 +1,10 @@
 ---
 en:
+  activemodel:
+    attributes:
+      participatory_process:
+        emitter_name: Emitter name
+        emitter_image: Emitter logo
   decidim:
     admin:
       forms:
@@ -19,6 +24,7 @@ en:
             emitter_logo: Emitter logo
             emitter_logo_select: Select an emitter
             emitter_name: Emitter name
+            emitter_image: Emitter logo
             emitter_new: New emitter
             emitter_now: Emitter now
       emitter:

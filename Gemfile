@@ -17,7 +17,6 @@ gem "decidim-emitter", path: "."
 
 gem "bootsnap", "~> 1.4"
 gem "puma", ">= 6.3.1"
-
 gem "faker"
 
 group :development, :test do

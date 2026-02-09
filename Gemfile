@@ -18,6 +18,8 @@ gem "decidim-emitter", path: "."
 gem "bootsnap", "~> 1.4"
 gem "puma", ">= 6.3.1"
 
+gem "faker"
+
 group :development, :test do
   gem "brakeman", "~> 6.1"
   gem "byebug", "~> 11.0", platform: :mri

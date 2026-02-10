@@ -10,11 +10,11 @@ module Decidim
           included do
             fetch_file_attributes :hero_image, :emitter
 
-            fetch_form_attributes :title, :subtitle, :weight, :slug, :hashtag, :promoted, :description,
-                                  :short_description, :scopes_enabled, :scope, :scope_type_max_depth,
-                                  :private_space, :developer_group, :local_area, :area, :target, :participatory_scope,
-                                  :participatory_structure, :meta_scope, :start_date, :end_date, :participatory_process_group,
-                                  :participatory_process_type, :announcement, :emitter_name
+            fetch_form_attributes :title, :subtitle, :weight, :slug, :promoted,
+                                  :taxonomizations, :private_space, :developer_group, :local_area,
+                                  :target, :participatory_scope, :participatory_structure,
+                                  :meta_scope, :start_date, :end_date, :participatory_process_group,
+                                  :announcement, :emitter_name
           end
         end
       end

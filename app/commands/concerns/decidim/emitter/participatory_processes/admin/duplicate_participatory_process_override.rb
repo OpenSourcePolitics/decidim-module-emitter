@@ -4,24 +4,21 @@ module Decidim
   module Emitter
     module ParticipatoryProcesses
       module Admin
-        module CopyParticipatoryProcessOverride
+        module DuplicateParticipatoryProcessOverride
           extend ActiveSupport::Concern
 
           included do
-            def copy_participatory_process
-              @copied_process = ParticipatoryProcess.create!(
+            def duplicate_participatory_process
+              @duplicated_process = ParticipatoryProcess.create!(
                 organization: @participatory_process.organization,
                 title: form.title,
                 subtitle: @participatory_process.subtitle,
                 slug: form.slug,
-                hashtag: @participatory_process.hashtag,
                 description: @participatory_process.description,
                 short_description: @participatory_process.short_description,
                 promoted: @participatory_process.promoted,
-                scope: @participatory_process.scope,
                 developer_group: @participatory_process.developer_group,
                 local_area: @participatory_process.local_area,
-                area: @participatory_process.area,
                 target: @participatory_process.target,
                 participatory_scope: @participatory_process.participatory_scope,
                 participatory_structure: @participatory_process.participatory_structure,
@@ -30,16 +27,19 @@ module Decidim
                 end_date: @participatory_process.end_date,
                 participatory_process_group: @participatory_process.participatory_process_group,
                 private_space: @participatory_process.private_space,
+                taxonomies: @participatory_process.taxonomies,
                 emitter_name: @participatory_process.emitter_name
               )
             end
 
-            def copy_participatory_process_attachments
-              [:hero_image, :emitter].each do |attribute|
-                next unless @participatory_process.attached_uploader(attribute).attached?
+            def duplicate_participatory_process_attachments
+              return unless @participatory_process.attached_uploader(:hero_image).attached?
 
-                @copied_process.send(attribute).attach(@participatory_process.send(attribute).blob)
-              end
+              @duplicated_process.send(:hero_image).attach(@participatory_process.send(:hero_image).blob)
+
+              return unless @participatory_process.attached_uploader(:emitter).attached?
+
+              @duplicated_process.emitter.attach(@participatory_process.emitter.blob)
             end
           end
         end

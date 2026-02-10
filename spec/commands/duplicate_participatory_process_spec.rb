@@ -3,25 +3,25 @@
 require "spec_helper"
 
 module Decidim::ParticipatoryProcesses
-  describe Admin::CopyParticipatoryProcess do
+  describe Admin::DuplicateParticipatoryProcess do
     subject { described_class.new(form, participatory_process) }
 
     let(:organization) { create(:organization) }
     let(:current_user) { create(:user, organization:) }
     let(:participatory_process_group) { create(:participatory_process_group, organization:) }
-    let(:scope) { create(:scope, organization:) }
+    let(:taxonomy) { create(:taxonomy, with_parent, organization:) }
     let(:errors) { double.as_null_object }
     let!(:participatory_process) { create(:participatory_process, :with_steps) }
     let!(:component) { create(:component, manifest_name: :dummy, participatory_space: participatory_process) }
     let(:form) do
       instance_double(
-        Admin::ParticipatoryProcessCopyForm,
+        Admin::ParticipatoryProcessDuplicateForm,
         invalid?: invalid,
         title: { en: "title" },
         slug: "copied-slug",
-        copy_steps?: copy_steps,
-        copy_categories?: copy_categories,
-        copy_components?: copy_components,
+        duplicate_steps?: duplicate_steps,
+        duplicate_categories?: duplicate_categories,
+        duplicate_components?: duplicate_components,
         current_user:
       )
     end
@@ -33,9 +33,9 @@ module Decidim::ParticipatoryProcesses
     end
 
     let(:invalid) { false }
-    let(:copy_steps) { false }
-    let(:copy_categories) { false }
-    let(:copy_components) { false }
+    let(:duplicate_steps) { false }
+    let(:duplicate_categories) { false }
+    let(:duplicate_components) { false }
 
     context "when the form is not valid" do
       let(:invalid) { true }
@@ -70,6 +70,7 @@ module Decidim::ParticipatoryProcesses
         expect(new_participatory_process.participatory_process_group).to eq(old_participatory_process.participatory_process_group)
         expect(new_participatory_process.private_space).to eq(old_participatory_process.private_space)
         expect(new_participatory_process.emitter_name).to eq(old_participatory_process.emitter_name)
+        expect(new_participatory_process.taxonomies).to eq(old_participatory_process.taxonomies)
       end
 
       it "broadcasts ok" do
@@ -89,8 +90,8 @@ module Decidim::ParticipatoryProcesses
       end
     end
 
-    context "when copy_steps exists" do
-      let(:copy_steps) { true }
+    context "when duplicate_steps exists" do
+      let(:duplicate_steps) { true }
 
       it "duplicates a participatory process and the steps" do
         expect { subject.call }.to change(Decidim::ParticipatoryProcessStep, :count).by(1)
@@ -106,8 +107,8 @@ module Decidim::ParticipatoryProcesses
       end
     end
 
-    context "when copy_categories exists" do
-      let(:copy_categories) { true }
+    context "when duplicate_categories exists" do
+      let(:duplicate_categories) { true }
 
       it "duplicates a participatory process and the categories" do
         expect { subject.call }.to change(Decidim::Category, :count).by(1)
@@ -134,12 +135,12 @@ module Decidim::ParticipatoryProcesses
       end
     end
 
-    context "when copy_components exists" do
-      let(:copy_components) { true }
+    context "when duplicate_components exists" do
+      let(:duplicate_components) { true }
 
       it "duplicates a participatory process and the components" do
         dummy_hook = proc {}
-        component.manifest.on :copy, &dummy_hook
+        component.manifest.on :duplicate, &dummy_hook
         expect(dummy_hook).to receive(:call).with({ new_component: an_instance_of(Decidim::Component), old_component: component })
 
         expect { subject.call }.to change(Decidim::Component, :count).by(1)

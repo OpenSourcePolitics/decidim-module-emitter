@@ -3,19 +3,20 @@
 require "spec_helper"
 
 module Decidim::ParticipatoryProcesses
-  describe Admin::CreateParticipatoryProcess, :versioning do
+  describe Admin::CreateParticipatoryProcess, versioning: true do
     subject { described_class.new(form) }
 
     let(:organization) { create(:organization) }
     let(:participatory_process_group) { create(:participatory_process_group, organization:) }
-    let(:participatory_process_type) { create(:participatory_process_type, organization:) }
-    let(:scope) { create(:scope, organization:) }
-    let(:area) { create(:area, organization:) }
     let(:current_user) { create(:user, :admin, organization:) }
     let(:errors) { double.as_null_object }
     let(:related_process_ids) { [] }
     let(:weight) { 1 }
     let(:hero_image) { nil }
+    let(:taxonomizations) do
+      2.times.map { build(:taxonomization, taxonomy: create(:taxonomy, :with_parent, organization:), taxonomizable: nil) }
+    end
+
     let(:emitter) { upload_test_file(Decidim::Dev.test_file("city.jpeg", "image/jpeg")) }
     let(:emitter_name) { "Berlin" }
     let(:form) do
@@ -26,7 +27,6 @@ module Decidim::ParticipatoryProcesses
         subtitle: { en: "subtitle" },
         weight:,
         slug: "slug",
-        hashtag: "hashtag",
         meta_scope: { en: "meta scope" },
         hero_image:,
         promoted: nil,
@@ -42,20 +42,17 @@ module Decidim::ParticipatoryProcesses
         current_user:,
         current_organization: organization,
         organization:,
-        scopes_enabled: true,
         private_space: false,
-        scope:,
-        scope_type_max_depth: nil,
-        area:,
+        taxonomizations:,
         errors:,
         related_process_ids:,
         participatory_process_group:,
-        participatory_process_type:,
         announcement: { en: "message" },
         emitter:,
         emitter_name:
       )
     end
+
     let(:invalid) { false }
 
     context "when the form is not valid" do
@@ -96,15 +93,14 @@ module Decidim::ParticipatoryProcesses
         expect { subject.call }.to change(Decidim::ParticipatoryProcess, :count).by(1)
       end
 
-      it "traces the action", :versioning do
+      it "traces the action", versioning: true do
         expect(Decidim.traceability)
           .to receive(:create)
-          .with(Decidim::ParticipatoryProcess, current_user, kind_of(Hash))
-          .and_call_original
+                .with(Decidim::ParticipatoryProcess, current_user, kind_of(Hash))
+                .and_call_original
 
         expect { subject.call }.to change(Decidim::ActionLog, :count)
-        action_log = Decidim::ActionLog.last
-        expect(action_log.version).to be_present
+        expect(Decidim::ActionLog.last.version).to be_present
       end
 
       it "broadcasts ok" do
@@ -120,6 +116,20 @@ module Decidim::ParticipatoryProcesses
       it "adds the admins as followers" do
         subject.call
         expect(current_user.follows?(process)).to be true
+      end
+
+      it "links to taxonomizations" do
+        subject.call
+        expect(process.taxonomizations).to match_array(taxonomizations)
+      end
+
+      context "when no taxonomizations are set" do
+        let(:taxonomizations) { [] }
+
+        it "taxonomizations are empty" do
+          subject.call
+          expect(process.taxonomizations).to be_empty
+        end
       end
 
       context "with related processes" do

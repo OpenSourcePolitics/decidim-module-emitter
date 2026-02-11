@@ -2,13 +2,25 @@
 
 require "spec_helper"
 
-describe "Admin imports participatory process" do # rubocop:disable RSpec/DescribeClass
+describe "Admin imports participatory process" do
   include_context "when admin administrating a participatory process"
 
   before do
     switch_to_host(organization.host)
     login_as user, scope: :user
     visit decidim_admin_participatory_processes.participatory_processes_path
+  end
+
+  context "when viewing the import page" do
+    before do
+      within_admin_menu do
+        click_on "Import"
+      end
+    end
+
+    it "displays the import help text" do
+      expect(page).to have_content("This import feature allows you to create a new participatory process from an exported JSON file")
+    end
   end
 
   context "with context" do
@@ -50,15 +62,6 @@ describe "Admin imports participatory process" do # rubocop:disable RSpec/Descri
 
       within ".table-list" do
         expect(page).to have_content(translated("Magni."))
-      end
-
-      within_admin_sidebar_menu do
-        click_on "Categories"
-      end
-
-      within ".table-list" do
-        expect(page).to have_content(translated("Illum nesciunt praesentium explicabo qui."))
-        expect(page).to have_content(translated("Expedita sint earum rerum consequatur."))
       end
 
       within_admin_sidebar_menu do

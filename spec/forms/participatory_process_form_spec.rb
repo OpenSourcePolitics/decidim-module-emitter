@@ -11,10 +11,10 @@ module Decidim
         let(:organization) { create(:organization) }
         let(:root_taxonomy) { create(:taxonomy, organization:) }
         let!(:taxonomies) { create_list(:taxonomy, 3, parent: root_taxonomy, organization:) }
-        let!(:taxonomy_filter1) { create(:taxonomy_filter, participatory_space_manifests: ["participatory_processes"], root_taxonomy:) }
-        let!(:taxonomy_filter2) { create(:taxonomy_filter, participatory_space_manifests: ["participatory_processes"], root_taxonomy:) }
-        let!(:taxonomy_filter3) { create(:taxonomy_filter, participatory_space_manifests: ["assemblies"], root_taxonomy:) }
-        let!(:taxonomy_filter4) { create(:taxonomy_filter, participatory_space_manifests: ["participatory_processes"]) }
+        let!(:process_taxonomy_filter_one) { create(:taxonomy_filter, participatory_space_manifests: ["participatory_processes"], root_taxonomy:) }
+        let!(:process_taxonomy_filter_two) { create(:taxonomy_filter, participatory_space_manifests: ["participatory_processes"], root_taxonomy:) }
+        let!(:assembly_taxonomy_filter) { create(:taxonomy_filter, participatory_space_manifests: ["assemblies"], root_taxonomy:) }
+        let!(:process_taxonomy_filter_without_root) { create(:taxonomy_filter, participatory_space_manifests: ["participatory_processes"]) }
         let(:title) do
           {
             en: "Title",
@@ -83,7 +83,7 @@ module Decidim
         it "returns taxonomizations and taxonomies" do
           expect(subject.taxonomizations.map(&:taxonomy_id)).to eq([taxonomies.first.id, taxonomies.second.id])
           expect(subject.root_taxonomies).to eq([root_taxonomy])
-          expect(subject.taxonomy_filters).to contain_exactly(taxonomy_filter1, taxonomy_filter2)
+          expect(subject.taxonomy_filters).to contain_exactly(process_taxonomy_filter_one, process_taxonomy_filter_two)
         end
 
         context "when taxonomies belong to another organization" do

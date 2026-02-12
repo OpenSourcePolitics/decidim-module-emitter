@@ -122,6 +122,7 @@ module Decidim::ParticipatoryProcesses
         expect(last_component.step_settings.values).not_to eq(component.step_settings.values)
       end
     end
+
     context "when duplicate_landing_page_blocks exists" do
       let(:duplicate_landing_page_blocks) { true }
       let(:original_image) do

@@ -45,7 +45,6 @@ module Decidim::ParticipatoryProcesses
           emitter: my_process.hero_image.blob
         }
       end
-      let(:user) { create :user, :admin, :confirmed, organization: my_process.organization }
       let(:context) do
         {
           current_organization: my_process.organization,
@@ -111,11 +110,11 @@ module Decidim::ParticipatoryProcesses
           expect(my_process.title["en"]).to eq("Foo title")
         end
 
-        it "tracks the action", versioning: true do
+        it "tracks the action", :versioning do
           expect(Decidim.traceability)
             .to receive(:perform_action!)
-                  .with(:update, my_process, user, {})
-                  .and_call_original
+            .with(:update, my_process, user, {})
+            .and_call_original
 
           expect { command.call }.to change(Decidim::ActionLog, :count)
 

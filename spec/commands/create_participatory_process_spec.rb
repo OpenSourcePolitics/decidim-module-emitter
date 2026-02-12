@@ -3,7 +3,7 @@
 require "spec_helper"
 
 module Decidim::ParticipatoryProcesses
-  describe Admin::CreateParticipatoryProcess, versioning: true do
+  describe Admin::CreateParticipatoryProcess, :versioning do
     subject { described_class.new(form) }
 
     let(:organization) { create(:organization) }
@@ -93,11 +93,11 @@ module Decidim::ParticipatoryProcesses
         expect { subject.call }.to change(Decidim::ParticipatoryProcess, :count).by(1)
       end
 
-      it "traces the action", versioning: true do
+      it "traces the action", :versioning do
         expect(Decidim.traceability)
           .to receive(:create)
-                .with(Decidim::ParticipatoryProcess, current_user, kind_of(Hash))
-                .and_call_original
+          .with(Decidim::ParticipatoryProcess, current_user, kind_of(Hash))
+          .and_call_original
 
         expect { subject.call }.to change(Decidim::ActionLog, :count)
         expect(Decidim::ActionLog.last.version).to be_present

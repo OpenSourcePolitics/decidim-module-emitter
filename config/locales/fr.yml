@@ -13,11 +13,21 @@ fr:
             explanation: 'Consignes pour le logo :'
             message_1: De préférence un logo qui sera visible sur un fond blanc.
             message_2: Le service réduit l'image.
+      participatory_process_imports:
+        new:
+          select: Sélectionnez les données que vous souhaitez dupliquer
     components:
       emitter:
         name: Émetteur
+    forms:
+      file_help:
+        import:
+          message_1: Les fichiers CSV, JSON et Excel (.xlsx) sont supportés
+          explanation: 'Instructions concernant le fichier:'
     participatory_processes:
       admin:
+        new_import:
+          help_html: Cette fonctionnalité d’importation vous permet de créer un nouveau processus participatif à partir d’un fichier JSON exporté. Vous pouvez exporter un processus depuis une autre organisation ou depuis cette même organisation. Le processus importé inclura ses paramètres, ses composants et ses pièces jointes (si sélectionnés).
         participatory_processes:
           form:
             emitter: Organisateur
@@ -26,6 +36,10 @@ fr:
             emitter_name: Nom du nouveau logo
             emitter_new: Ou choisissez un nouveau logo pour l’organisateur de la concertation
             emitter_now: Émetteur actuel
+        participatory_process_imports:
+          form:
+            document_legend: Ajouter un document
+            slug_help_html: 'Les identifiants d''URL sont utilisés pour générer les URL qui pointent vers cette concertation. N''accepte que des lettres, des chiffres et des tirets et doit commencer par une lettre. Exemple: %{url}'
       emitter:
         emitter_text: Publié par %{developer_group}
         emitter_img_alt_test: Logo de %{developer_group}

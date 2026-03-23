@@ -44,10 +44,11 @@ module Decidim
 
           def emitter_select=(value)
             if value.present?
-              target_pp = Decidim::ParticipatoryProcess.find(value)
-              @emitter_select = target_pp.emitter if target_pp.emitter.attached?
-
-              @emitter_name_select = target_pp.emitter_name
+              target_pp = Decidim::ParticipatoryProcess.find_by(id: value)
+              if target_pp&.emitter&.attached?
+                @emitter_select = target_pp.emitter.attachment.blob
+                @emitter_name_select = target_pp.emitter_name
+              end
             end
             prepare_emitter!
             prepare_emitter_name!

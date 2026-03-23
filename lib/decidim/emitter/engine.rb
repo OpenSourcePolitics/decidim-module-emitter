@@ -39,7 +39,7 @@ module Decidim
             Decidim::ParticipatoryProcesses::Admin::CreateParticipatoryProcess.include(Decidim::Emitter::ParticipatoryProcesses::Admin::CreateParticipatoryProcessOverride)
           end
           unless Decidim::Emitter.skip_extend?(:participatory_process_copy)
-            Decidim::ParticipatoryProcesses::Admin::CopyParticipatoryProcess.include(Decidim::Emitter::ParticipatoryProcesses::Admin::CopyParticipatoryProcessOverride)
+            Decidim::ParticipatoryProcesses::Admin::DuplicateParticipatoryProcess.include(Decidim::Emitter::ParticipatoryProcesses::Admin::DuplicateParticipatoryProcessOverride)
           end
           unless Decidim::Emitter.skip_extend?(:participatory_process_update)
             Decidim::ParticipatoryProcesses::Admin::UpdateParticipatoryProcess.include(Decidim::Emitter::ParticipatoryProcesses::Admin::UpdateParticipatoryProcessOverride)

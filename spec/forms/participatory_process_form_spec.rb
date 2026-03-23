@@ -8,7 +8,13 @@ module Decidim
       describe ParticipatoryProcessForm do
         subject { described_class.from_params(attributes).with_context(current_organization: organization) }
 
-        let(:organization) { create :organization }
+        let(:organization) { create(:organization) }
+        let(:root_taxonomy) { create(:taxonomy, organization:) }
+        let!(:taxonomies) { create_list(:taxonomy, 3, parent: root_taxonomy, organization:) }
+        let!(:process_taxonomy_filter_one) { create(:taxonomy_filter, participatory_space_manifests: ["participatory_processes"], root_taxonomy:) }
+        let!(:process_taxonomy_filter_two) { create(:taxonomy_filter, participatory_space_manifests: ["participatory_processes"], root_taxonomy:) }
+        let!(:assembly_taxonomy_filter) { create(:taxonomy_filter, participatory_space_manifests: ["assemblies"], root_taxonomy:) }
+        let!(:process_taxonomy_filter_without_root) { create(:taxonomy_filter, participatory_space_manifests: ["participatory_processes"]) }
         let(:title) do
           {
             en: "Title",
@@ -38,6 +44,8 @@ module Decidim
             ca: "Descripció curta"
           }
         end
+        let(:start_date) { 1.month.ago }
+        let(:end_date) { 1.month.from_now }
         let(:slug) { "slug" }
         let(:attachment) { upload_test_file(Decidim::Dev.test_file("city.jpeg", "image/jpeg")) }
         let(:emitter_name) { "city" }
@@ -57,16 +65,31 @@ module Decidim
               "short_description_en" => short_description[:en],
               "short_description_es" => short_description[:es],
               "short_description_ca" => short_description[:ca],
+              "start_date" => start_date,
+              "end_date" => end_date,
               "hero_image" => attachment,
               "slug" => slug,
               "emitter" => attachment,
-              "emitter_name" => emitter_name
+              "emitter_name" => emitter_name,
+              "taxonomies" => [taxonomies.first.id, taxonomies.second.id]
             }
           }
         end
 
         context "when everything is OK" do
           it { is_expected.to be_valid }
+        end
+
+        it "returns taxonomizations and taxonomies" do
+          expect(subject.taxonomizations.map(&:taxonomy_id)).to eq([taxonomies.first.id, taxonomies.second.id])
+          expect(subject.root_taxonomies).to eq([root_taxonomy])
+          expect(subject.taxonomy_filters).to contain_exactly(process_taxonomy_filter_one, process_taxonomy_filter_two)
+        end
+
+        context "when taxonomies belong to another organization" do
+          let!(:taxonomies) { create_list(:taxonomy, 3) }
+
+          it { is_expected.not_to be_valid }
         end
 
         context "when hero_image is too big" do
@@ -157,6 +180,71 @@ module Decidim
 
             it "is valid" do
               expect(subject).to be_valid
+            end
+          end
+        end
+
+        context "when the start_date is later than end_date" do
+          let(:start_date) { 1.month.from_now }
+          let(:end_date) { 2.months.ago }
+
+          it { is_expected.to be_invalid }
+
+          it "has an error" do
+            subject.valid?
+
+            expect(subject.errors).not_to be_empty
+            expect(subject.errors[:end_date]).not_to be_empty
+            expect(subject.errors[:start_date]).not_to be_empty
+          end
+        end
+
+        context "when start_date is present" do
+          let(:start_date) { 3.months.ago }
+
+          it { is_expected.to be_valid }
+        end
+
+        context "when end_date is present" do
+          let(:end_date) { 2.months.from_now }
+
+          it { is_expected.to be_valid }
+        end
+
+        context "when start_date is not present" do
+          let(:start_date) { nil }
+
+          it { is_expected.to be_valid }
+        end
+
+        context "when end_date is not present" do
+          let(:end_date) { nil }
+
+          it { is_expected.to be_valid }
+        end
+
+        context "when selecting an emitter from another process" do
+          let(:other_process_with_emitter) { create(:participatory_process, organization:) }
+          let(:other_process_without_emitter) { create(:participatory_process, organization:) }
+
+          before do
+            other_process_with_emitter.emitter.attach(
+              io: File.open(Decidim::Dev.test_file("city.jpeg", "image/jpeg")),
+              filename: "city.jpeg",
+              content_type: "image/jpeg"
+            )
+            other_process_with_emitter.update!(emitter_name: "Other Emitter")
+          end
+
+          context "when the target process has no emitter attached" do
+            before do
+              attributes["participatory_process"]["emitter_select"] = other_process_without_emitter.id
+            end
+
+            it { is_expected.to be_valid }
+
+            it "does not raise an error" do
+              expect { subject.valid? }.not_to raise_error
             end
           end
         end

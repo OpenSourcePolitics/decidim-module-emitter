@@ -222,6 +222,32 @@ module Decidim
 
           it { is_expected.to be_valid }
         end
+
+        context "when selecting an emitter from another process" do
+          let(:other_process_with_emitter) { create(:participatory_process, organization:) }
+          let(:other_process_without_emitter) { create(:participatory_process, organization:) }
+
+          before do
+            other_process_with_emitter.emitter.attach(
+              io: File.open(Decidim::Dev.test_file("city.jpeg", "image/jpeg")),
+              filename: "city.jpeg",
+              content_type: "image/jpeg"
+            )
+            other_process_with_emitter.update!(emitter_name: "Other Emitter")
+          end
+
+          context "when the target process has no emitter attached" do
+            before do
+              attributes["participatory_process"]["emitter_select"] = other_process_without_emitter.id
+            end
+
+            it { is_expected.to be_valid }
+
+            it "does not raise an error" do
+              expect { subject.valid? }.not_to raise_error
+            end
+          end
+        end
       end
     end
   end
